@@ -1,0 +1,88 @@
+<!-- ==================== destinations/view.html ==================== -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(title=${destination.name}, content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div th:if="${destination.imageUrl != null and !#strings.isEmpty(destination.imageUrl)}" 
+                     class="card-img-top" 
+                     th:style="'height: 400px; background: url(' + ${destination.imageUrl} + ') center/cover;'">
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title" th:text="${destination.name}">Nom</h2>
+                    <p class="text-muted">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        <span th:text="${destination.city + ', ' + destination.country}">Ville, Pays</span>
+                    </p>
+                    <div class="mb-3">
+                        <span class="badge bg-primary" th:text="${destination.category}">Catégorie</span>
+                        <span th:if="${destination.popularityScore != null}" class="badge bg-warning text-dark ms-2">
+                            <i class="fas fa-star"></i> <span th:text="${destination.popularityScore}"></span>
+                        </span>
+                    </div>
+                    <p class="card-text" th:text="${destination.description}">Description</p>
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <a th:href="@{/destinations/{id}/recommend(id=${destination.id})}" class="btn btn-success">
+                            <i class="fas fa-magic me-2"></i>Obtenir une recommandation IA
+                        </a>
+                        <a th:href="@{/destinations/{id}/seasonal(id=${destination.id})}" class="btn btn-info">
+                            <i class="fas fa-calendar-alt me-2"></i>Conseils saisonniers
+                        </a>
+                        <a th:href="@{/destinations/edit/{id}(id=${destination.id})}" class="btn btn-warning">
+                            <i class="fas fa-edit me-2"></i>Modifier
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Hôtels -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-hotel me-2"></i>Hôtels</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${hotels != null and !hotels.isEmpty()}">
+                        <div th:each="hotel : ${hotels}" class="mb-3 pb-3 border-bottom">
+                            <h6 th:text="${hotel.name}">Nom</h6>
+                            <p class="text-muted small mb-1" th:text="${hotel.address}">Adresse</p>
+                            <div>
+                                <span th:each="i : ${#numbers.sequence(1, hotel.stars)}" class="text-warning">★</span>
+                                <span class="ms-2 small" th:text="'à partir de ' + ${hotel.pricePerNight} + '€/nuit'">Prix</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p th:unless="${hotels != null and !hotels.isEmpty()}" class="text-muted">Aucun hôtel disponible</p>
+                </div>
+            </div>
+            
+            <!-- Activités -->
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-hiking me-2"></i>Activités</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${activities != null and !activities.isEmpty()}">
+                        <div th:each="activity : ${activities}" class="mb-3 pb-3 border-bottom">
+                            <h6 th:text="${activity.name}">Nom</h6>
+                            <p class="text-muted small mb-1" th:text="${activity.description}">Description</p>
+                            <div class="small">
+                                <span class="badge bg-info" th:text="${activity.type}">Type</span>
+                                <span class="ms-2" th:text="${activity.price} + '€'">Prix</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p th:unless="${activities != null and !activities.isEmpty()}" class="text-muted">Aucune activité disponible</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

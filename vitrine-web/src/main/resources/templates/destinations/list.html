@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(title='Destinations', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-map-marked-alt me-2 text-primary"></i>Toutes les Destinations</h2>
+        <a href="/destinations/new" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Nouvelle Destination
+        </a>
+    </div>
+
+    <div th:if="${destinations != null and !destinations.isEmpty()}" class="row">
+        <div th:each="destination : ${destinations}" class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div th:if="${destination.imageUrl != null and !#strings.isEmpty(destination.imageUrl)}" 
+                     class="card-img-top" 
+                     th:style="'height: 180px; background: url(' + ${destination.imageUrl} + ') center/cover;'">
+                </div>
+                <div th:unless="${destination.imageUrl != null and !#strings.isEmpty(destination.imageUrl)}"
+                     class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                     style="height: 180px;">
+                    <i class="fas fa-image fa-3x text-white"></i>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" th:text="${destination.name}">Nom</h5>
+                    <p class="text-muted mb-2">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        <span th:text="${destination.city + ', ' + destination.country}">Ville, Pays</span>
+                    </p>
+                    <div class="mb-3">
+                        <span class="badge bg-primary" th:text="${destination.category}">Catégorie</span>
+                        <span th:if="${destination.popularityScore != null}" 
+                              class="badge bg-warning text-dark ms-2">
+                            <i class="fas fa-star"></i> <span th:text="${destination.popularityScore}"></span>
+                        </span>
+                    </div>
+                    <p class="card-text flex-grow-1" th:text="${#strings.abbreviate(destination.description, 120)}">Description</p>
+                    <div class="d-flex gap-2 mt-3">
+                        <a th:href="@{/destinations/{id}(id=${destination.id})}" 
+                           class="btn btn-sm btn-outline-primary flex-fill">
+                            <i class="fas fa-eye me-1"></i>Détails
+                        </a>
+                        <a th:href="@{/destinations/{id}/recommend(id=${destination.id})}" 
+                           class="btn btn-sm btn-success">
+                            <i class="fas fa-magic me-1"></i>IA
+                        </a>
+                        <a th:href="@{/destinations/edit/{id}(id=${destination.id})}" 
+                           class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a th:href="@{/destinations/delete/{id}(id=${destination.id})}" 
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette destination ?');">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:if="${destinations == null or destinations.isEmpty()}" class="alert alert-info text-center">
+        <i class="fas fa-info-circle me-2"></i>
+        Aucune destination trouvée. <a href="/destinations/new" class="alert-link">Ajoutez-en une maintenant !</a>
+    </div>
+</div>
+</body>
+</html>

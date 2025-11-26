@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout (title, content)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Tourism App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --dark-color: #1f2937;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        /* Enhanced Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-link {
+            color: #475569 !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+            transform: translateY(-2px);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 80%;
+        }
+        
+        /* Hero Section Styles */
+        .hero-section {
+            position: relative;
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            overflow: hidden;
+            margin: -1rem -12px 3rem -12px;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,144C960,149,1056,139,1152,122.7C1248,107,1344,85,1392,74.7L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: bottom;
+            animation: wave 15s ease-in-out infinite;
+        }
+        
+        @keyframes wave {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-50px); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            max-width: 900px;
+        }
+        
+        .hero-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            letter-spacing: -2px;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .hero-features {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: 500;
+        }
+        
+        .btn-hero-primary {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+            padding: 1rem 2.5rem;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            color: #667eea;
+        }
+        
+        .btn-hero-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            font-weight: 600;
+            padding: 1rem 2.5rem;
+        }
+        
+        .btn-hero-secondary:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-3px);
+        }
+        
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, 10px); }
+        }
+        
+        /* Animation Classes */
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .animate-fade-in-delay {
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+        
+        .animate-fade-in-delay-2 {
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Professional Dashboard Styles */
+        .dashboard-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 4rem 0;
+            margin: -1rem -12px 3rem -12px;
+        }
+        
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            opacity: 0.1;
+            border-radius: 50%;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-destinations::before { background: var(--gradient-1); }
+        .card-hotels::before { background: var(--gradient-2); }
+        .card-activities::before { background: var(--gradient-3); }
+        .card-ai::before { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        
+        .stats-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        .card-destinations .stats-icon { color: #667eea; }
+        .card-hotels .stats-icon { color: #f5576c; }
+        .card-activities .stats-icon { color: #00f2fe; }
+        .card-ai .stats-icon { color: #fa709a; }
+        
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats-label {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .stats-link:hover {
+            color: #764ba2;
+            transform: translateX(5px);
+        }
+        
+        /* Featured Section */
+        .featured-section {
+            margin-top: 3rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .featured-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .featured-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+        
+        .featured-image {
+            height: 250px;
+            background-size: cover !important;
+            background-position: center !important;
+            position: relative;
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            color: #f59e0b;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .featured-content {
+            padding: 1.5rem;
+        }
+        
+        .featured-description {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            margin-top: 4rem;
+        }
+        
+        .cta-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+        }
+        
+        .cta-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+        
+        .cta-secondary {
+            background: var(--gradient-3);
+            color: white;
+        }
+        
+        .cta-icon {
+            font-size: 3.5rem;
+            opacity: 0.9;
+        }
+        
+        .cta-content h4 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Enhanced Cards */
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* Buttons */
+        .btn {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-1);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 5rem;
+        }
+        
+        footer a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero-icon {
+                font-size: 3rem;
+            }
+            
+            .stats-number {
+                font-size: 2rem;
+            }
+            
+            .cta-card {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-plane-departure me-2"></i>Tourism Intelligence
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                 
+<li class="nav-item" sec:authorize="isAuthenticated()">
+    <span class="nav-link">
+        <i class="fas fa-user-circle me-1"></i>
+        <span sec:authentication="name"></span>
+    </span>
+</li>
+<li class="nav-item" sec:authorize="isAuthenticated()">
+    <a class="nav-link" th:href="@{http://localhost:8180/realms/tourism-realm/protocol/openid-connect/logout(redirect_uri='http://localhost:8080')}">
+        <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
+    </a>
+</li>
+
+<li class="nav-item" sec:authorize="!isAuthenticated()">
+    <a class="nav-link" href="/login">
+        <i class="fas fa-sign-in-alt me-1"></i>Connexion
+    </a>
+</li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/destinations"><i class="fas fa-map-marked-alt me-1"></i>Destinations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/hotels"><i class="fas fa-hotel me-1"></i>Hôtels</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/activities"><i class="fas fa-hiking me-1"></i>Activités</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users"><i class="fas fa-user me-1"></i>Profils</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Alerts -->
+    <div class="container mt-4">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i><span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <main class="container my-4">
+        <div th:replace="${content}"></div>
+    </main>
+
+    <!-- Enhanced Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-plane-departure me-2"></i>Tourism Intelligence
+                    </h5>
+                    <p class="text-muted">
+                        Plateforme de recommandations touristiques intelligentes propulsée par l'IA
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-2">
+                        <i class="fas fa-university me-2"></i>
+                        Projet TP3 - Environnements et Programmation Dédiés
+                    </p>
+                    <p class="text-muted mb-2">Université de Jijel - Master 1 IA</p>
+                    <p class="mb-0">
+                        <small>
+                            <i class="fas fa-server me-1"></i>Service CRUD (Port 8081) | 
+                            <i class="fas fa-robot me-1"></i>Service IA (Port 5000)
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

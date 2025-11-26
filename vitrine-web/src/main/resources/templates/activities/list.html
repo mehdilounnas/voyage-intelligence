@@ -1,0 +1,73 @@
+<!-- ==================== activities/list.html ==================== -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(title='Activités', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-hiking me-2 text-success"></i>Toutes les Activités</h2>
+        <a href="/activities/new" class="btn btn-success">
+            <i class="fas fa-plus me-2"></i>Nouvelle Activité
+        </a>
+    </div>
+
+    <div th:if="${activities != null and !activities.isEmpty()}" class="row">
+        <div th:each="activity : ${activities}" class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div th:if="${activity.imageUrl != null and !#strings.isEmpty(activity.imageUrl)}" 
+                     class="card-img-top" 
+                     th:style="'height: 150px; background: url(' + ${activity.imageUrl} + ') center/cover;'">
+                </div>
+                <div th:unless="${activity.imageUrl != null and !#strings.isEmpty(activity.imageUrl)}"
+                     class="card-img-top bg-success d-flex align-items-center justify-content-center" 
+                     style="height: 150px;">
+                    <i class="fas fa-hiking fa-3x text-white"></i>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" th:text="${activity.name}">Nom</h5>
+                    <p class="text-muted small mb-2" th:if="${activity.destination != null}">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        <span th:text="${activity.destination.city}">Ville</span>
+                    </p>
+                    <div class="mb-2">
+                        <span class="badge bg-info" th:text="${activity.type}">Type</span>
+                        <span class="badge bg-warning text-dark ms-1" th:if="${activity.rating != null}">
+                            <i class="fas fa-star"></i> <span th:text="${activity.rating}"></span>
+                        </span>
+                    </div>
+                    <p class="card-text small flex-grow-1" th:text="${#strings.abbreviate(activity.description, 100)}">Description</p>
+                    <div class="border-top pt-2">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-primary fw-bold">
+                                <span th:text="${activity.price}">Prix</span>€
+                            </span>
+                            <span class="text-muted small">
+                                <i class="far fa-clock me-1"></i>
+                                <span th:text="${activity.duration}">Durée</span>h
+                            </span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/activities/edit/{id}(id=${activity.id})}" 
+                               class="btn btn-sm btn-warning flex-fill">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                            <a th:href="@{/activities/delete/{id}(id=${activity.id})}" 
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Supprimer cette activité ?');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:if="${activities == null or activities.isEmpty()}" class="alert alert-info text-center">
+        <i class="fas fa-info-circle me-2"></i>
+        Aucune activité trouvée. <a href="/activities/new" class="alert-link">Ajoutez-en une !</a>
+    </div>
+</div>
+</body>
+</html>
+

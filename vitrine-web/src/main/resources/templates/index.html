@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(title='Accueil - Tourism Intelligence', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    
+    <!-- Stunning Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-icon animate-fade-in">
+                <i class="fas fa-globe-americas"></i>
+            </div>
+            <h1 class="hero-title animate-fade-in">
+                Tourism Intelligence
+            </h1>
+            <p class="hero-subtitle animate-fade-in-delay">
+                Découvrez le monde avec l'intelligence artificielle
+            </p>
+            <div class="hero-features animate-fade-in-delay">
+                <span class="hero-badge"><i class="fas fa-brain me-2"></i>IA Avancée</span>
+                <span class="hero-badge"><i class="fas fa-cloud-sun me-2"></i>Météo en Temps Réel</span>
+                <span class="hero-badge"><i class="fas fa-map-marked-alt me-2"></i>Destinations Mondiales</span>
+            </div>
+            <div class="hero-buttons mt-4 animate-fade-in-delay-2">
+                <a href="/destinations" class="btn btn-hero-primary btn-lg me-3">
+                    <i class="fas fa-compass me-2"></i>Explorer les Destinations
+                </a>
+                <a href="#dashboard" class="btn btn-hero-secondary btn-lg">
+                    <i class="fas fa-chart-line me-2"></i>Voir les Statistiques
+                </a>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+    
+    <!-- Professional Dashboard -->
+    <div class="dashboard-container" id="dashboard">
+        <div class="container-fluid">
+            
+            <!-- Dashboard Header -->
+            <div class="text-center mb-5">
+                <h2 class="dashboard-title">
+                    <i class="fas fa-chart-pie me-3"></i>Tableau de Bord Professionnel
+                </h2>
+                <p class="text-muted fs-5">Aperçu complet de notre écosystème touristique intelligent</p>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-xl-3">
+                    <div class="stats-card card-destinations">
+                        <div class="stats-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number" th:text="${destinations != null ? destinations.size() : 0}">0</h3>
+                            <p class="stats-label">Destinations Mondiales</p>
+                            <div class="stats-footer mt-3">
+                                <a href="/destinations" class="stats-link">
+                                    Explorer tout <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-xl-3">
+                    <div class="stats-card card-hotels">
+                        <div class="stats-icon">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number">20+</h3>
+                            <p class="stats-label">Hôtels Partenaires</p>
+                            <div class="stats-footer mt-3">
+                                <a href="/hotels" class="stats-link">
+                                    Découvrir <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-xl-3">
+                    <div class="stats-card card-activities">
+                        <div class="stats-icon">
+                            <i class="fas fa-hiking"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number">30+</h3>
+                            <p class="stats-label">Activités Exceptionnelles</p>
+                            <div class="stats-footer mt-3">
+                                <a href="/activities" class="stats-link">
+                                    Voir tout <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-xl-3">
+                    <div class="stats-card card-ai">
+                        <div class="stats-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number">∞</h3>
+                            <p class="stats-label">Recommandations IA</p>
+                            <div class="stats-footer mt-3">
+                                <span class="stats-link">
+                                    Propulsé par AI <i class="fas fa-sparkles ms-1"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Featured Destinations -->
+            <div class="featured-section">
+                <h3 class="section-title mb-4">
+                    <i class="fas fa-fire me-2 text-danger"></i>Destinations les Plus Populaires
+                </h3>
+                <div class="row g-4" th:if="${destinations != null and !destinations.isEmpty()}">
+                    <div th:each="destination, iterStat : ${destinations}" 
+                         th:if="${iterStat.index < 3}"
+                         class="col-md-6 col-lg-4">
+                        <div class="featured-card">
+                            <div class="featured-image" 
+                                 th:style="${destination.imageUrl != null and !#strings.isEmpty(destination.imageUrl)} ? 
+                                           'background: url(' + ${destination.imageUrl} + ') center/cover;' : 
+                                           'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);'">
+                                <div class="featured-badge" th:if="${destination.popularityScore != null}">
+                                    <i class="fas fa-fire me-1"></i>
+                                    <span th:text="${destination.popularityScore}">95</span>
+                                </div>
+                            </div>
+                            <div class="featured-content">
+                                <h4 th:text="${destination.name}">Destination</h4>
+                                <p class="text-muted mb-2">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    <span th:text="${destination.city + ', ' + destination.country}">Location</span>
+                                </p>
+                                <span class="badge" 
+                                      style="background: var(--gradient-1); color: white;"
+                                      th:text="${destination.category}">Catégorie</span>
+                                <p class="featured-description mt-2" 
+                                   th:text="${#strings.abbreviate(destination.description, 100)}">
+                                    Description
+                                </p>
+                                <div class="d-flex gap-2 mt-3">
+                                    <a th:href="@{/destinations/{id}(id=${destination.id})}" 
+                                       class="btn btn-sm btn-outline-primary flex-fill">
+                                        <i class="fas fa-eye me-1"></i>Détails
+                                    </a>
+                                    <a th:href="@{/destinations/{id}/recommend(id=${destination.id})}" 
+                                       class="btn btn-sm btn-success">
+                                        <i class="fas fa-magic me-1"></i>IA
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="cta-card cta-primary">
+                            <div class="cta-icon">
+                                <i class="fas fa-compass"></i>
+                            </div>
+                            <div class="cta-content flex-grow-1">
+                                <h4>Planifiez votre Voyage de Rêve</h4>
+                                <p class="mb-3">Explorez nos destinations et créez l'itinéraire parfait avec l'aide de notre intelligence artificielle avancée</p>
+                                <a href="/destinations" class="btn btn-light">
+                                    Commencer l'Aventure <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="cta-card cta-secondary">
+                            <div class="cta-icon">
+                                <i class="fas fa-user-astronaut"></i>
+                            </div>
+                            <div class="cta-content flex-grow-1">
+                                <h4>Expérience Personnalisée</h4>
+                                <p class="mb-3">Créez votre profil et obtenez des recommandations sur mesure basées sur vos préférences de voyage</p>
+                                <a href="/users/new" class="btn btn-light">
+                                    Créer mon Profil <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Architecture Section -->
+            <div class="card mt-5" style="background: white; border-radius: 20px; overflow: hidden;">
+                <div class="card-body p-4">
+                    <h4 class="mb-4 text-center">
+                        <i class="fas fa-network-wired me-2"></i>Architecture Microservices Moderne
+                    </h4>
+                    <div class="row text-center g-4">
+                        <div class="col-md-4">
+                            <div class="p-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+                                <i class="fas fa-desktop fa-3x mb-3"></i>
+                                <h6 class="fw-bold">Vitrine Web</h6>
+                                <small>Spring Boot + Thymeleaf<br>Port 8080</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 15px; color: white;">
+                                <i class="fas fa-database fa-3x mb-3"></i>
+                                <h6 class="fw-bold">Service CRUD</h6>
+                                <small>Spring Boot REST API<br>Port 8081</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 15px; color: white;">
+                                <i class="fas fa-brain fa-3x mb-3"></i>
+                                <h6 class="fw-bold">Service IA</h6>
+                                <small>Python Flask + APIs<br>Port 5000</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+</body>
+</html>

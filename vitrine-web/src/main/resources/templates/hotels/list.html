@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(title='Hôtels', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-hotel me-2 text-primary"></i>Tous les Hôtels</h2>
+        <a href="/hotels/new" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Nouvel Hôtel
+        </a>
+    </div>
+
+    <div th:if="${hotels != null and !hotels.isEmpty()}" class="row">
+        <div th:each="hotel : ${hotels}" class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div th:if="${hotel.imageUrl != null and !#strings.isEmpty(hotel.imageUrl)}" 
+                     class="card-img-top" 
+                     th:style="'height: 200px; background: url(' + ${hotel.imageUrl} + ') center/cover;'">
+                </div>
+                <div th:unless="${hotel.imageUrl != null and !#strings.isEmpty(hotel.imageUrl)}"
+                     class="card-img-top bg-info d-flex align-items-center justify-content-center" 
+                     style="height: 200px;">
+                    <i class="fas fa-hotel fa-3x text-white"></i>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" th:text="${hotel.name}">Nom de l'hôtel</h5>
+                    
+                    <p class="text-muted mb-2" th:if="${hotel.destination != null}">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        <span th:text="${hotel.destination.city + ', ' + hotel.destination.country}">Ville, Pays</span>
+                    </p>
+                    
+                    <div class="mb-2">
+                        <span th:each="i : ${#numbers.sequence(1, hotel.stars)}" class="text-warning">★</span>
+                        <span th:if="${hotel.rating != null}" class="badge bg-success ms-2">
+                            <i class="fas fa-star"></i> <span th:text="${hotel.rating}">4.5</span>
+                        </span>
+                    </div>
+                    
+                    <p class="text-muted small mb-2" th:text="${hotel.address}">Adresse</p>
+                    
+                    <p class="text-primary fw-bold mb-2">
+                        <i class="fas fa-euro-sign"></i> 
+                        <span th:text="${hotel.pricePerNight}">150</span>€ / nuit
+                    </p>
+                    
+                    <p class="small text-muted flex-grow-1" th:if="${hotel.amenities != null}" 
+                       th:text="${#strings.abbreviate(hotel.amenities, 80)}">
+                        Équipements
+                    </p>
+                    
+                    <div class="d-flex gap-2 mt-auto">
+                        <a th:href="@{/hotels/edit/{id}(id=${hotel.id})}" 
+                           class="btn btn-sm btn-warning flex-fill">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        <a th:href="@{/hotels/delete/{id}(id=${hotel.id})}" 
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet hôtel ?');">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:if="${hotels == null or hotels.isEmpty()}" class="alert alert-info text-center">
+        <i class="fas fa-info-circle me-2"></i>
+        Aucun hôtel trouvé. <a href="/hotels/new" class="alert-link">Ajoutez-en un maintenant !</a>
+    </div>
+</div>
+</body>
+</html>

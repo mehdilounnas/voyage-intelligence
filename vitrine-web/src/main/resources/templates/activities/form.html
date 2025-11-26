@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(title='Formulaire Activité', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <h2 class="mb-4">
+        <i class="fas fa-hiking me-2"></i>
+        <span th:text="${activity.id != null ? 'Modifier Activite' : 'Nouvelle Activite'}">Formulaire Activite</span>
+    </h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/activities/save}" th:object="${activity}" method="post">
+                <input type="hidden" th:field="*{id}">
+                
+                <div class="mb-3">
+                    <label class="form-label">Nom de l'activité *</label>
+                    <input type="text" class="form-control" th:field="*{name}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Destination *</label>
+                    <select class="form-select" name="destinationId" required>
+                        <option value="">-- Sélectionner une destination --</option>
+                        <option th:each="dest : ${destinations}" 
+                                th:value="${dest.id}" 
+                                th:text="${dest.name + ' (' + dest.city + ', ' + dest.country + ')'}"
+                                th:selected="${activity.destination != null and activity.destination.id == dest.id}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" th:field="*{description}" rows="4"></textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Type d'activité *</label>
+                        <select class="form-select" th:field="*{type}" required>
+                            <option value="">-- Sélectionner --</option>
+                            <option value="visite">Visite guidée</option>
+                            <option value="sport">Sport</option>
+                            <option value="culture">Culture</option>
+                            <option value="gastronomie">Gastronomie</option>
+                            <option value="aventure">Aventure</option>
+                            <option value="detente">Détente</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Prix (€) *</label>
+                        <input type="number" step="0.01" class="form-control" th:field="*{price}" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Durée (heures) *</label>
+                        <input type="number" class="form-control" th:field="*{duration}" min="1" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Note (0-5)</label>
+                        <input type="number" step="0.1" class="form-control" th:field="*{rating}" min="0" max="5">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">URL de l'image</label>
+                    <input type="url" class="form-control" th:field="*{imageUrl}">
+                </div>
+                
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-2"></i>Enregistrer
+                    </button>
+                    <a href="/activities" class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i>Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
